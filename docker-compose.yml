@@ -1,0 +1,68 @@
+version: "2"
+services:
+  plex:
+    volumes:
+      - /media:/data
+      - /srv/plex/config:/config
+      # - /srv/plex/transcode:/transcode
+    image: plexinc/pms-docker
+    container_name: plex
+    network_mode: "host"
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    ports:
+      - "8989:8989"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /media/downloads:/downloads
+      - /media/series:/tv
+      - /srv/sonarr/config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+  headphones:
+    image: linuxserver/headphones
+    container_name: headphones
+    ports:
+      - "8181:8181"
+    volumes:
+      - /media/downloads:/downloads
+      - /media/music:/music
+      - /srv/headphones/config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+    volumes:
+      - /media/downloads:/downloads
+      - /media/downloads/transmission/watch:/watch
+      - /srv/transmission/config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+  # nzbget:
+  #   image: linuxserver/nzbget
+  #   container_name: nzbget
+  #   ports:
+  #     - "6789:6789"
+  #   volumes:
+  #     - /srv/nzbget/config:/config
+  #     - /media:/downloads
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
